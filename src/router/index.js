@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
-
+const loginCallback = () => import('@/views/login/callback.vue')
 // 路由表
 const routes = [
   {
@@ -13,6 +13,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: () => import('@/views/login')
+  },
+  {
+    path: '/login/callback',
+    name: 'callback',
+    component: loginCallback
   }, {
     path: '/products/:id',
     name: 'products',
