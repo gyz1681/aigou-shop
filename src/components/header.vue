@@ -6,7 +6,7 @@
                <span class="custom-title" @click="loginOut" style="margin-left:10px;"  v-show="isLogins">退出登录</span>
           </template>
            <template #title v-else >
-               <span class="custom-title" @click="$router.push('/login')">登录</span>
+               <span class="custom-title"><RouterLink to="/login">登录</RouterLink></span>
           </template>
       </van-cell>
   <van-search
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'Header',
   data () {
@@ -45,6 +45,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations('shopcar', ['removeProduct']),
     onSearch () {
       this.$store.commit('car/getSearch', this.keyword)
     },
@@ -53,6 +54,7 @@ export default {
         message: '确认退出登录吗？'
       }).then(() => {
         this.$store.dispatch('car/loginOut')
+        this.removeProduct()
         this.$router.go()
       }).catch(() => {
         console.log('')

@@ -9,20 +9,6 @@
   @load="onLoad"
 >
        <van-cell v-for="item in list" :key="item.id">
-     <!-- <van-card
-  num="2"
-  :price="item.coin"
-  :desc="item.seriesSubTitle"
-  :title="item.seriesTitle"
-  :thumb="`https://sc.wolfcode.cn/${item.coverImg}`"
-  @click="$router.push({
-    name:'products',
-    params:{
-      id:item.id
-    }
-  })"
->
-</van-card> -->
 <List :item="item"/>
  </van-cell>
 </van-list>
