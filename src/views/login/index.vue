@@ -41,6 +41,11 @@
           登录
         </van-button>
       </div>
+      <!-- <div style="text-align: center;">
+        <a href="https://graph.qq.com/oauth2.0/authorize?client_id=100556005&response_type=token&scope=all&redirect_uri=http%3A%2F%2Fwww.corho.com%3A8080%2F%23%2Flogin%2Fcallback">
+        <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
+        </a>
+      </div> -->
     </van-form>
     <!-- /登录表单 -->
   </div>
@@ -48,11 +53,15 @@
 
 <script>
 import { PhoneLoginAPI, SendSMSAPI } from '@/api/user'
-
+import { mapActions } from 'vuex'
 export default {
   name: 'LoginIndex',
   components: {},
   props: {},
+  mounted () {
+    // 组件渲染完毕，使用QC生成QQ登录按钮
+    // this.loginQC()
+  },
   data () {
     return {
       user: {
@@ -83,10 +92,11 @@ export default {
   watch: {},
   created () {
   },
-  mounted () {},
   methods: {
+
+    ...mapActions('shopcar', ['getCarts']),
     async onSubmit () {
-      // 1. 获取表单数据
+    // 1. 获取表单数据
       this.$toast.loading({
         message: '登录中...',
         forbidClick: true, // 禁用背景点击
@@ -96,24 +106,27 @@ export default {
       // TODO: 2. 表单验证
 
       // 3. 提交表单请求登录
-      try {
-        const res = await PhoneLoginAPI(this.user)
-        this.$store.commit('car/setToken', res['x-auth-token'])
-        this.$store.dispatch('car/getUser')
-        this.$toast.success('登录成功')
-        this.$router.back()
-      } catch (err) {
-        if (err.response.status === 400) {
-          console.log('手机号或验证码错误')
+      await PhoneLoginAPI(this.user).then(res => {
+      // console.log(res)
+        if (res.code === 0) {
+          this.$store.commit('car/setToken', res['x-auth-token'])
+          this.$store.dispatch('car/getUser')
+          this.getCarts()
+          this.$toast('登录成功')
+          this.$router.back()
+        } else if (res.code !== 0) {
+          this.$toast('验证码有误')
         } else {
-          console.log('登录失败，请稍后重试', err)
+          this.$toast('登录失败')
         }
-      }
+      }).catch(err => {
+        console.log('登录失败' + err)
+      })
 
-      // 4. 根据请求响应结果处理后续操作
+    // 4. 根据请求响应结果处理后续操作
     },
     async onSendSms () {
-      // 1. 校验手机号
+    // 1. 校验手机号
       try {
         await this.$refs.loginForm.validate('phone')
       } catch (err) {
@@ -124,10 +137,12 @@ export default {
       this.isCountDownShow = true
 
       // 3. 请求发送验证码
-      SendSMSAPI({
+      await SendSMSAPI({
         phone: this.user.phone
-      }).then(res => {
-        console.log(res)
+      }).then(() => {
+        this.$toast('发送成功')
+      }).catch(err => {
+        this.$toast('获取失败' + err)
       })
     }
   }

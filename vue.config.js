@@ -3,12 +3,20 @@ module.exports = {
     port: 8080,
     proxy: {
       '/api': {
-        target: 'http://kumanxuan1.f3322.net:8881/cms/',
-        changeOrigin: true// 是否跨域
-        // pathRewrite: {
-        //   '^/api': ''
-        // }
+        target: 'process.env.VUE_APP_BASE_URL',
+        pathRewrite: {
+          '^/api': ''
+        }
       }
     }
   }
+  // // 这个是给webpack-dev-server开启可IP和域名访问权限。
+  // chainWebpack: config => {
+  //   config.devServer.disableHostCheck(true)
+  // },
+  // configureWebpack: {
+  //   externals: {
+  //     qc: 'QC'
+  //   }
+  // }
 }

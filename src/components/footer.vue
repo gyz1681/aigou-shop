@@ -2,7 +2,7 @@
   <div>
       <van-goods-action>
   <van-goods-action-icon icon="chat-o" text="客服" dot />
-  <van-goods-action-icon icon="cart-o" text="购物车" @click="$router.push('/car')" :badge="checkedCount"/>
+  <van-goods-action-icon icon="cart-o" text="购物车" @click="$router.push('/car')" :badge="totalCount"/>
  <van-goods-action-icon icon="shop-o" text="店铺" @click="$router.push('/')" />
   <van-goods-action-button type="danger" @click="open" text="立即兑换" />
 </van-goods-action>
@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'Footer',
   props: {
     lists: {
-      type: Object,
+      type: [Array, Object],
       required: true
     }
   },
@@ -70,12 +70,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('shopcar', ['checkedCount'])
+    ...mapGetters('shopcar', ['totalCount']),
+    ...mapGetters(['userInfo', 'token'])
   },
   methods: {
-    dd () {
-      this.$store.commit('shopCar/addCar', this.list)
-    },
+    ...mapMutations('shopcar', ['removeProduct']),
     getImg () {
       const { coverImg, coin, stock, id, title } = this.lists
       // console.log(coverImg)
@@ -94,12 +93,34 @@ export default {
       tree[0].v[0].previewImgUrl = `https://sc.wolfcode.cn/${coverImg[1]}`
     },
     onAddCartClicked (e) {
-      // console.log(e.goodsId)
-      this.$store.dispatch('shopcar/addCars', { productId: e.goodsId, total: e.selectedNum })
-      this.show = false
+      if (!this.token) {
+        this.$dialog.confirm({
+          message: '需要登录,是否跳转登录页？'
+        }).then(() => {
+          this.$router.push('/login')
+        }).catch(res => {})
+      } else if (e.selectedNum > 5) {
+        this.$toast('每款限购五个')
+      } else {
+        this.$store.dispatch('shopcar/insetCart', e)
+        this.show = false
+      }
     },
+
     onBuyClicked (e) {
-      console.log(e)
+      if (!this.token) {
+        this.$dialog.confirm({
+          message: '需要登录,是否跳转登录页？'
+        }).then(() => {
+          this.$router.push('/login')
+        }).catch(res => {})
+      } else if (e.selectedNum > 5) {
+        this.$toast('每款限购五个')
+      } else {
+        this.$store.dispatch('shopcar/insetCart', { productId: e.goodsId, total: e.selectedNum, modified: 1 })
+        this.$router.push('/car')
+        this.show = false
+      }
     },
     open () {
       this.getImg()
@@ -108,7 +129,6 @@ export default {
   }
 }
 </script>
-
-<style>
+<style lang="less" scoped>
 
 </style>
