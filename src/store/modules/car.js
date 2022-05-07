@@ -2,19 +2,17 @@ import { getItem, setItem, removeItem } from '@/utils/storage'
 import { gerUseInfo } from '@/api/user'
 const TOKEN = 'x-auth-token'
 const USER = 'userInfo'
+const UUID = 'uuid'
 const state = {
   token: getItem(TOKEN), // 获取token
-  user: getItem(USER)
+  user: getItem(USER),
+  uuid: getItem(UUID)
 }
 
 const mutations = {
   setToken (state, payload) {
     state.token = payload
     setItem(TOKEN, state.token)
-  },
-  removeToken (state) {
-    state.token = null
-    removeItem(TOKEN)
   },
   setUser (state, data) {
     state.user = data
@@ -23,6 +21,14 @@ const mutations = {
   removeUser (state) {
     state.user = {}
     removeItem(USER)
+    state.token = null
+    removeItem(TOKEN)
+    state.uuid = null
+    removeItem(UUID)
+  },
+  setUuid (state, data) {
+    state.uuid = data
+    setItem(UUID, data)
   }
 }
 

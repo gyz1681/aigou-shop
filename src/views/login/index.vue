@@ -41,32 +41,35 @@
           登录
         </van-button>
       </div>
-      <!-- <div style="text-align: center;">
-        <a href="https://graph.qq.com/oauth2.0/authorize?client_id=100556005&response_type=token&scope=all&redirect_uri=http%3A%2F%2Fwww.corho.com%3A8080%2F%23%2Flogin%2Fcallback">
-        <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
-        </a>
-      </div> -->
     </van-form>
     <!-- /登录表单 -->
+    <div class="wxlogin" v-show="showForm">
+          <wxlogin
+     :appid ="appid" :scope =" scope" :redirect_uri ="redirect_uri " :state ="state" :href="href"
+    >微信登录</wxlogin>
+    </div>
+    <button class="wxbtn" @click="showForm=!showForm">微信登录</button>
   </div>
 </template>
 
 <script>
-import { PhoneLoginAPI, SendSMSAPI } from '@/api/user'
-import { mapActions } from 'vuex'
+
+import { PhoneLoginAPI, SendSMSAPI, WeixinLoginApi, WXbangDing } from '@/api/user'
+import { mapActions, mapState } from 'vuex'
+import wxlogin from 'vue-wxlogin'
 export default {
   name: 'LoginIndex',
-  components: {},
+  components: {
+    wxlogin
+  },
   props: {},
   mounted () {
-    // 组件渲染完毕，使用QC生成QQ登录按钮
-    // this.loginQC()
   },
   data () {
     return {
       user: {
         phone: '18682463885', // 手机号
-        verifyCode: '' // 验证码
+        verifyCode: ''// 验证码
 
       },
       userFormRules: {
@@ -85,15 +88,48 @@ export default {
           message: '验证码格式错误'
         }]
       },
-      isCountDownShow: false
+      isCountDownShow: false,
+      appid: 'wx67cfaf9e3ad31a0d',
+      scope: 'snsapi_login',
+      // 扫码成功后重定向的接口
+      redirect_uri: 'https://sc.wolfcode.cn/cms/wechatUsers/shop/PC',
+      // state填写编码后的url
+      state: encodeURIComponent(window.btoa('http://192.168.0.100:8080' + this.$route.path)),
+      // 调用样式文件
+      href: 'data:text/css;base64,Lyogd3hsb2dpbi5jc3MgKi8NCi5pbXBvd2VyQm94IC50aXRsZSwgLmltcG93ZXJCb3ggLmluZm97DQogIGRpc3BsYXk6IG5vbmU7DQp9DQoNCi5pbXBvd2VyQm94IC5xcmNvZGV7DQogIG1hcmdpbi10b3A6IDIwcHg7DQp9',
+      showForm: false
     }
   },
-  computed: {},
+  computed: {
+    ...mapState('car', ['uuid'])
+  },
   watch: {},
   created () {
+    setTimeout(async () => {
+      // 判断地址栏有没有code
+      const mycode = this.$route.query.code
+      if (mycode) {
+        const res = await WeixinLoginApi({ code: mycode })
+        if (res.code === 0) {
+          this.$toast('登录成功')
+          this.$router.push('/home')
+          this.$store.commit('car/setToken', res['x-auth-token'])
+          this.$store.dispatch('car/getUser')
+          this.getCarts()
+        } else if (res.code === 400) {
+          this.$router.push('/login')
+          this.showForm = true
+          this.$toast('请重新扫码登录')
+        } else if (res.code === 407) {
+          this.$router.push('/login')
+          this.showForm = true
+          this.$toast('请使用手机绑定登录微信')
+          this.$store.commit('car/setUuid', res.uuid)
+        }
+      }
+    }, 0)
   },
   methods: {
-
     ...mapActions('shopcar', ['getCarts']),
     async onSubmit () {
     // 1. 获取表单数据
@@ -106,22 +142,40 @@ export default {
       // TODO: 2. 表单验证
 
       // 3. 提交表单请求登录
-      await PhoneLoginAPI(this.user).then(res => {
-      // console.log(res)
-        if (res.code === 0) {
-          this.$store.commit('car/setToken', res['x-auth-token'])
-          this.$store.dispatch('car/getUser')
-          this.getCarts()
-          this.$toast('登录成功')
-          this.$router.back()
-        } else if (res.code !== 0) {
-          this.$toast('验证码有误')
-        } else {
-          this.$toast('登录失败')
-        }
-      }).catch(err => {
-        console.log('登录失败' + err)
-      })
+      if (!this.uuid) {
+        await PhoneLoginAPI(this.user).then(res => {
+          // console.log(res)
+          if (res.code === 0) {
+            this.$store.commit('car/setToken', res['x-auth-token'])
+            this.$store.dispatch('car/getUser')
+            this.getCarts()
+            this.$toast('登录成功')
+            this.$router.back()
+          } else if (res.code !== 0) {
+            this.$toast('验证码有误')
+          } else {
+            this.$toast('登录失败')
+          }
+        }).catch(err => {
+          console.log('登录失败' + err)
+        })
+      } else {
+        await WXbangDing({ ...this.user, uuid: this.uuid }).then(res => {
+          if (res.code === 0) {
+            this.$store.commit('car/setToken', res['x-auth-token'])
+            this.$store.dispatch('car/getUser')
+            this.getCarts()
+            this.$toast('登录成功')
+            this.$router.back()
+          } else if (res.code !== 0) {
+            this.$toast('验证码有误')
+          } else {
+            this.$toast('登录失败')
+          }
+        }).catch(err => {
+          console.log('登录失败' + err)
+        })
+      }
 
     // 4. 根据请求响应结果处理后续操作
     },
@@ -174,6 +228,21 @@ export default {
   }
 .close{
   color:#fff;
+}
+.wxlogin{
+    position: absolute;
+   left: 50%;
+    transform: translate(-50%);
+    top:600px;
+}
+.wxbtn {
+  position: absolute;
+    top: 530px;
+    left: 50%;
+    transform: translate(-50%);
+    color: #999;
+    border: 1px solid #999;
+    font-size: 50px;
 }
 }
 </style>

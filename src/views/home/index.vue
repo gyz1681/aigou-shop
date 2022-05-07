@@ -14,9 +14,15 @@ export default {
   components: {
     Header, ShangPin
   },
+  created () {
+
+  },
   data () {
     return {
+      code: ''
     }
+  },
+  methods: {
   }
 
 }

@@ -28,6 +28,14 @@ import { productInfo } from '@/api/user'
 export default {
   components: { Footer },
   props: {
+    id: {
+      type: [Number, String],
+      required: true
+    },
+    age: {
+      type: String,
+      required: true
+    }
   },
   name: 'productInfo',
   data () {

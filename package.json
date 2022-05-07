@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --open --mode dev",
-    "servepro" :"vue-cli-service serve --open --mode prod",
+    "servepro": "vue-cli-service serve --open --mode prod",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -12,6 +12,8 @@
     "amfe-flexible": "^2.2.1",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
+    "js": "^0.1.0",
+    "mockjs": "^1.1.0",
     "nprogress": "^0.2.0",
     "qs": "^6.10.3",
     "vant": "^2.5.7",
@@ -37,7 +39,8 @@
     "less-loader": "^5.0.0",
     "lint-staged": "^9.5.0",
     "postcss-pxtorem": "^5.1.1",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "vue-wxlogin": "^1.0.4"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"

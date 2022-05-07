@@ -4,66 +4,37 @@
 import request from '@/utils/request'
 import qs from 'qs'
 // 获取商品资料
+export const RemenAPI = () => request('/products/recommend', 'get')
 
-export const RemenAPI = () => request({ url: '/products/recommend' })
-export const HotAPI = () => request({ url: '/products/hot' })
+// 获取热门商品
+export const HotAPI = () => request('/products/hot', 'get')
+
 // 所有商品
-export const AllProAPI = () => {
-  return request({
-    method: 'GET',
-    url: '/products'
-  })
-}
+export const AllProAPI = () => request('/products', 'get')
+
 // 商品详情
-export const productInfo = id => {
-  return request({
-    method: 'GET',
-    url: `/products/${id}`
-  })
-}
+export const productInfo = id => request(`/products/${id}`, 'get')
 
 // 登录
-export const PhoneLoginAPI = params => request.post('/phoneRegin', qs.stringify(params))
-// 获取验证码
-// export const getSms = data => {
-//   return request({
-//     method: 'POST',
-//     url: '/sendSMS',
-//     data
-//   })
-// }
+export const PhoneLoginAPI = params => request('/phoneRegin', 'post', qs.stringify(params))
 
-//
-export const SendSMSAPI = params => request.post('/sendSMS', qs.stringify(params))
+// 获取验证码
+export const SendSMSAPI = params => request('/sendSMS', 'post', qs.stringify(params))
 
 // 用户信息
-export const gerUseInfo = () => {
-  return request({
-    method: 'GET',
-    url: '/shop/userProfiles'
-  })
-}
+export const gerUseInfo = () => request('/shop/userProfiles', 'get')
 
 // 查看购物车
-export const getCart = () => {
-  return request({
-    method: 'get',
-    url: '/shop/carts'
-  })
-}
+export const getCart = () => request('/shop/carts', 'get')
+
 // 添加商品
-export const getAddCart = params => request.post('/shop/carts/add', qs.stringify(params))
-//   return request({
-//     method: 'post',
-//     url: '/shop/carts/add',
-//     qs.stringify(data)
-//   })
-// }
+export const getAddCart = params => request('/shop/carts/add', 'post', qs.stringify(params))
 
 // 删除商品
-export const delCart = id => {
-  return request({
-    method: 'DELETE',
-    url: `/shop/carts?productIds=${id}`
-  })
-}
+export const delCart = id => request(`/shop/carts?productIds=${id}`, 'delete')
+
+// 微信登录（这个接口必须用qs对数据进行格式化）
+export const WeixinLoginApi = (params) => request('/wechatUsers/PCLogin', 'post', qs.stringify(params))
+
+// 微信绑定
+export const WXbangDing = params => request('/wechatUsers/binding', 'post', qs.stringify(params))
