@@ -4,7 +4,10 @@
     <keep-alive include="ShangPin">
     <router-view/>
     </keep-alive>
-    水电费收费是
+    水电费收费是水电费撒的发生的
+    509978d
+    <!-- 路由的出口 -->
+
   </div>
 </template>
 
