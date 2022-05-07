@@ -4,6 +4,7 @@
     <keep-alive include="ShangPin">
     <router-view/>
     </keep-alive>
+    水电费收费是
   </div>
 </template>
 
