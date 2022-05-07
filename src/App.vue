@@ -4,7 +4,6 @@
     <keep-alive include="ShangPin">
     <router-view/>
     </keep-alive>
-    <div>sdfasdfs</div>
   </div>
 </template>
 
