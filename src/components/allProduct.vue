@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="container">
  <van-list
   v-model="loading"
   :finished="finished"
@@ -57,6 +57,8 @@ export default {
 
 </script>
 
-<style>
-
-</style>
+<style lang="less" scoped>
+.container{
+  padding-top: 0 !important;
+}
+</style>>

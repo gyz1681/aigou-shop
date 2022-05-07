@@ -55,7 +55,6 @@ export default {
 <style lang="less" scoped>
 .container{
     padding-top:280px;
-    padding-bottom:120px;
     .pruducts{
         height: 89vh;
     overflow-y: auto;

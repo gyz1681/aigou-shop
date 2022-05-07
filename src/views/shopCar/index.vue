@@ -79,6 +79,7 @@ export default {
     ...mapActions('shopcar', ['deleteCars', 'updateProduct']),
     ...mapMutations('shopcar', ['updateAllProductCheck', 'updateProdctChecked']),
     onSubmit () {
+      this.$router.push('/order')
     },
     deletePro (id) {
       // console.log(id)

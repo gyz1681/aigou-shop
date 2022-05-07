@@ -19,7 +19,7 @@ router.beforeEach((to, from, next) => {
     // 没有token
     const token = store.getters.token
     if (!token && to.path.startsWith('/car')) {
-      return next('/login?redirectUrl=' + encodeURIComponent(to.fullPath))
+      return next('/login')
     }
     next()
   }
