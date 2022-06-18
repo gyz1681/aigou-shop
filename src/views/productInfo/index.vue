@@ -1,24 +1,24 @@
 <template>
   <div>
-     <van-swipe class="my-swipe" :autoplay="5000" indicator-color="white">
-  <van-swipe-item v-for="(image,index) in images" :key="index">
-<img :src="image" class="imge" lazy-render="true"/>
-  </van-swipe-item>
-</van-swipe>
-<van-cell-group inset>
-  <van-cell :title="seriesTitle"  :label="seriesSubTitle" />
-</van-cell-group>
-<van-cell-group inset>
-  <van-cell :title="`${list.coin}积分`" class="jifen"/>
-</van-cell-group>
-<van-cell-group inset>
-  <van-cell :title="title">
-  </van-cell>
-  <van-cell>
-      <van-tag plain type="primary" size="large" :class="{current: item.currentActivate}" @click="tages(item.id)"  v-for="item in products" :key="item.id">{{item.title}}</van-tag>
-  </van-cell>
-</van-cell-group>
-<Footer :lists="list"/>
+    <van-swipe class="my-swipe" :autoplay="5000" indicator-color="white">
+      <van-swipe-item v-for="(image, index) in images" :key="index">
+        <img :src="image" class="imge" lazy-render="true" />
+      </van-swipe-item>
+    </van-swipe>
+    <van-cell-group inset>
+      <van-cell :title="seriesTitle" :label="seriesSubTitle" />
+    </van-cell-group>
+    <van-cell-group inset>
+      <van-cell :title="`${list.coin}积分`" class="jifen" />
+    </van-cell-group>
+    <van-cell-group inset>
+      <van-cell :title="title"> </van-cell>
+      <van-cell>
+        <van-tag plain type="primary" size="large" :class="{ current: item.currentActivate }" @click="tages(item.id)"
+          v-for="item in products" :key="item.id">{{ item.title }}</van-tag>
+      </van-cell>
+    </van-cell-group>
+    <Footer :lists="list" />
   </div>
 </template>
 
@@ -90,32 +90,33 @@ export default {
       })
     }
   },
-  watch: {
-
-  }
+  watch: {}
 }
-
 </script>
 
 <style lang="less" scoped>
- .my-swipe .van-swipe-item {
-    color: #fff;
-    font-size: 20px;
-    text-align: center;
-    .imge{
-        width: 100%;
-    }
+.my-swipe .van-swipe-item {
+  color: #fff;
+  font-size: 20px;
+  text-align: center;
+
+  .imge {
+    width: 100%;
   }
-  .jifen{
-      font-size: 50px;
-      font-weight: 700;
-      color:#FD604D;
-  }
-  .van-tag--primary.van-tag--plain{
-      color: #999;
-      margin :10px;
-  }
-     .current{
-          color: #FD604D !important;
-      }
+}
+
+.jifen {
+  font-size: 50px;
+  font-weight: 700;
+  color: #fd604d;
+}
+
+.van-tag--primary.van-tag--plain {
+  color: #999;
+  margin: 10px;
+}
+
+.current {
+  color: #fd604d !important;
+}
 </style>

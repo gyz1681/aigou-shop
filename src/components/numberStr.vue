@@ -19,6 +19,12 @@ export default {
       require: true
     }
   },
+  created () {
+    const url = function () {
+      return console.log(location)
+    }
+    url()
+  },
   data () {
     return {
       currentValue: this.values

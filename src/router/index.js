@@ -38,6 +38,10 @@ const routes = [
     path: '/order',
     name: 'order',
     component: sumbmitOrder
+  },
+  {
+    path: '/vnode',
+    component: () => import('@/views/node')
   }
 
 ]
